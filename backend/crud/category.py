@@ -15,9 +15,6 @@ def get_categories(db: Session, skip: int = 0, limit: int = 100):
 def get_category(db: Session, category_id: int) -> category.Category:
     return db.query(category.Category).filter(category.Category.id == category_id).first()
 
-def get_category_by_id(db: Session, category_id: int) -> category.Category:
-    return db.query(category.Category).filter(category.Category.id == category_id).first()
-
 def update_category(db: Session, category_id: int, category_update: CategoryUpdate) -> category.Category:
     db_category = db.query(category.Category).filter(category.Category.id == category_id).first()
     if db_category:
