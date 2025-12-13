@@ -12,9 +12,9 @@ from routers import (
 # Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="AO Seminte API",
+    title="Flowers Ecommerce API",
     version="1.0.0",
-    description="Backend API pentru e-commerce AO Seminte"
+    description="Backend API pentru e-commerce Flowers Ecommerce"
 )
 
 app.add_middleware(
