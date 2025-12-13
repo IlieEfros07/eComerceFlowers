@@ -12,13 +12,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 from app.database import Base
-from models import (
-    user,
-    category,
-    product,
-    product_image,
-
-)
+from models import *
 
 # === 4. Alembic config ===
 config = context.config

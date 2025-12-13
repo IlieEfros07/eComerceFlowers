@@ -1,13 +1,12 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 
 class ProductImage(Base):
     __tablename__ = "product_images"
 
-    id = Column(Integer, primary_key=True)
-    url = Column(String, nullable=False)
-    is_main = Column(Boolean, default=False)
+    id = Column(Integer, primary_key=True, index=True)
+    image_url = Column(String, nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"))
 
-    product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"))
     product = relationship("Product", back_populates="images")

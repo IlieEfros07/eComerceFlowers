@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 from models.order import Order
 from models.order_item import OrderItem
 from models.product import Product
@@ -19,47 +20,44 @@ def get_order(db: Session, order_id: int):
 
 def create_order(db: Session, order_data: OrderCreate) -> Order:
     
-
-    db_order = Order(
-        customer_name=order_data.customer_name,
-        customer_phone=order_data.customer_phone,
-        customer_email=order_data.customer_email,
-        customer_address=order_data.customer_address,
-        payment_status="pending",
-        order_status="pending",
-        user_id=order_data.user_id
-    )
-    db.add(db_order)
-    db.flush() 
-
-    total = 0
-
-    for item in order_data.items:
-        product = db.query(Product).filter(Product.id == item.product_id).first()
-
-        if not product:
-            raise Exception(f"Product {item.product_id} does not exist")
-
-        if product.stock < item.quantity:
-            raise Exception(f"Not enough stock for {product.name}")
-
-        order_item = OrderItem(
-            order_id=db_order.id,
-            product_id=item.product_id,
-            quantity=item.quantity,
-            price=product.price, 
-        )
-        db.add(order_item)
-        total += product.price * item.quantity
-
-        product.stock -= item.quantity
-
-    db_order.total = total
-
-    db.commit()
-    db.refresh(db_order)
-
-    return db_order
+  db_order = Order(
+      customer_name=order_data.customer_name,
+      customer_phone=order_data.customer_phone,
+      customer_email=order_data.customer_email,
+      customer_address=order_data.customer_address,
+      payment_status="pending",
+      order_status="pending",
+      user_id=order_data.user_id,
+      total=0
+  )
+  
+  db.add(db_order)
+  db.flush()
+  
+  total = 0
+  
+  for item in order_data.items:
+      product = db.query(Product).filter(Product.id == item.product_id).first()
+      if not product:
+          raise Exception("Product not found")
+  
+      if product.stock < item.quantity:
+          raise Exception("Not enough stock")
+  
+      db.add(OrderItem(
+          order_id=db_order.id,
+          product_id=item.product_id,
+          quantity=item.quantity,
+          price=product.price
+      ))
+  
+      total += product.price * item.quantity
+      product.stock -= item.quantity
+  
+  db_order.total = total
+  db.commit()
+  db.refresh(db_order)
+  
 
 
 
