@@ -8,7 +8,6 @@ from routers import (
     order
 )
 
-
 # Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
